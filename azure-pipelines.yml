@@ -6,6 +6,9 @@
 trigger:
 - main
 
+pool:
+  name: Default  # or the name of your self-hosted pool
+
 variables:
   buildConfiguration: 'Release'
 
