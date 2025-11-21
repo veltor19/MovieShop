@@ -1,0 +1,85 @@
+﻿Controllers ------> Services ------> Repositories
+	|
+	Views
+
+Partial Views: 
+
+Grid: 12 col system
+
+Eager Loading:
+Lazy Loading
+AsNoTracking()
+
+3 big cloud providers
+1. AWS
+2. Azure Microsoft
+
+3. GCP Google
+
+MovieShop App => local machine
+
+1. Domain Name => movieshop.com => GoDaddy, Google Domains
+2. Deploy your Application Code => MVC to a server => 
+	1. Windows Server 2019 => IIS
+	2. Linux Server => Ngix
+3. Build your own server
+	Windows Server => Intel Xenon 24 core processor, 128Gb Ram, 4TB of Hard Disk => Dell
+	Install the OS => Windows Server 2019 (buy software from microsoft)
+	IIS will be inside the server
+
+
+1. 
+Infrastructure as a Service(IaaS)
+Option 1. Go to a Cloud Provider
+Buy Virtual Machines with either windows or linux
+IIS or Ngix i can use to deploy the app
+Install Sql Server
+
+Option 2. Platform as a Service(PaaS)
+Azure App Service => Deploy your MVC applications
+Azure SQL => Sql Datbase in Cloud
+Azure DevOps => 
+
+Azure Functions => Serverless Functions => running a piece of code in the server without managing any server infrastructure
+Azure Blob Storage => storing files, images, videos, etc
+Azure Conginitive Services => text analysis, speech, image recognition, sentiment
+
+Software as a Service(SaaS)
+Office 365
+Google Docs
+Microsoft teams
+Slack
+
+DevOps
+Development + Operations
+People from dev teams and people from operations team combine to make sure your code is running properly
+
+Development Team =>
+DevOps Team => 
+
+Continuus Integration(CI) => The practice used by development teams of automating merging and testing code.
+Implementing CI helps to catch bugs early in the development cycle, which makes them less expensive to fix.
+Automated tests execute as part of the CI process to ensure quality.
+Artifacts are produced from CI systems and fed to release processes to drive frequent deployments
+The Build service in azure DevOps Server helps you set up and manage CI for you applications
+
+Continuous Delivery(CD) => Is a process by which code is built, tested, and deployed to one or more test and production environments.
+Deploying and testing in multiple environments increases quality.
+CI systems produce deployable artifacts, including infrastructure and apps.
+Automated release process consume these artifacts to release new versions and fixes to existing system
+Monitoring and altering systems run continually to drive visibility into the entire CD process
+
+QA team => will test appplication functionality end to end
+
+Feature Branches => will get code from master/main branch
+Developers will add new Code in this feature branch
+
+Feature Branch 2
+
+Different branches (master/main branch)
+
+Check in the code into GitHub
+
+Azure DevOps Pipeline => DevOps Team + you will work closely with them
+CI comes in to picture, it takes the code from GitHub => build the code, run the unit tests, then generate a artifact
+CD => will take the artifacts and publishes/deploys the code to anywhere (IIS in Windows VM, Ngix in Linx VM, Azure App Service)

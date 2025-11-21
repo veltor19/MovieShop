@@ -1,0 +1,228 @@
+﻿@model ApplicationCore.Models.MovieDetailsModel
+
+<div class="container mt-4">
+    <!-- First Row: 3 Columns -->
+    <div class="row">
+        <!-- Column 1: Movie Poster -->
+        <div class="col-md-3">
+            <img src="@Model.PosterUrl" alt="@Model.Title" class="img-fluid rounded shadow" />
+        </div>
+
+        <!-- Column 2: Movie Details -->
+        <div class="col-md-6">
+            <h2>@Model.Title</h2>
+            <p class="text-muted fst-italic">@Model.TagLine</p>
+            
+            <!-- Genres as Badges -->
+            <div class="mb-3">
+                @foreach (var genre in Model.Genres)
+                {
+                    <span class="badge bg-secondary me-1">@genre.Name</span>
+                }
+            </div>
+
+            <!-- Rating Badge -->
+            <div class="mb-3">
+                <span class="badge bg-warning text-dark">
+                    ⭐ @Model.Rating.ToString("0.0") / 10
+                </span>
+            </div>
+
+            <p class="mt-3">
+                <strong>Overview:</strong><br />
+                @Model.Overview
+            </p>
+
+            <div class="row mt-3">
+                <div class="col-6">
+                    <strong>Budget:</strong> @Model.Budget.ToString("C")
+                </div>
+                <div class="col-6">
+                    <strong>Revenue:</strong> @Model.Revenue.ToString("C")
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-6">
+                    <strong>Release Date:</strong> @Model.ReleaseDate?.ToString("MMM dd, yyyy")
+                </div>
+                <div class="col-6">
+                    <strong>Runtime:</strong> @Model.RunTime minutes
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 3: Action Buttons -->
+        <!-- Column 3: Action Buttons -->
+        <div class="col-md-3">
+            <div class="d-grid gap-2">
+                @if (Model.IsPurchased) {
+                    <button type="button" class="btn btn-success btn-lg" disabled>
+                        ✅ Already Owned
+                    </button>
+                    <a href="#" class="btn btn-primary btn-lg">
+                        ▶️ Watch Movie
+                    </a>
+                } else {
+                    <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#buyMovieModal">
+                        🛒 Buy Movie
+                    </button>
+                }
+                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                    ✍️ Write Review
+                </button>
+                <form asp-controller="Account" asp-action="ToggleFavorite" asp-route-id="@Model.Id" method="post" class="d-grid">
+                    <button type="submit" class="btn btn-outline-danger btn-lg">
+                        ❤️ Add to Favorites
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <!-- Second Row: 2 Columns -->
+    <div class="row">
+        <!-- Column 1: Movie Facts & Trailers -->
+        <div class="col-md-6">
+            <!-- Movie Facts -->
+            <h4 class="mb-3">Movie Facts</h4>
+            <ul class="list-group mb-4">
+                <li class="list-group-item">
+                    <strong>Original Language:</strong> @Model.OriginalLanguage
+                </li>
+                <li class="list-group-item">
+                    <strong>Release Date:</strong> @Model.ReleaseDate?.ToString("MMMM dd, yyyy")
+                </li>
+                <li class="list-group-item">
+                    <strong>Runtime:</strong> @Model.RunTime minutes
+                </li>
+                <li class="list-group-item">
+                    <strong>Budget:</strong> @Model.Budget.ToString("C")
+                </li>
+                <li class="list-group-item">
+                    <strong>Revenue:</strong> @Model.Revenue.ToString("C")
+                </li>
+                <li class="list-group-item">
+                    <strong>IMDb Link:</strong> 
+                    <a href="@Model.ImdbUrl" target="_blank" class="text-decoration-none">View on IMDb</a>
+                </li>
+            </ul>
+
+            <!-- Trailers -->
+            <h4 class="mb-3">Trailers</h4>
+            <ul class="list-group">
+                @if (Model.Trailers != null && Model.Trailers.Any())
+                {
+                    @foreach (var trailer in Model.Trailers)
+                    {
+                        <li class="list-group-item">
+                            <a href="@trailer.TrailerUrl" target="_blank" class="text-decoration-none">
+                                🎬 @trailer.Name
+                            </a>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item text-muted">No trailers available</li>
+                }
+            </ul>
+        </div>
+
+        <!-- Column 2: Cast -->
+        <div class="col-md-6">
+            <h4 class="mb-3">Cast</h4>
+            <ul class="list-group">
+                @if (Model.Casts != null && Model.Casts.Any())
+                {
+                    @foreach (var cast in Model.Casts)
+                    {
+                        <li class="list-group-item d-flex align-items-center">
+                            <img src="@cast.ProfilePath" alt="@cast.Name" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;" />
+                            <div class="flex-grow-1">
+                                <a asp-controller="Cast" asp-action="Details" asp-route-id="@cast.Id" class="text-decoration-none">
+                                    <strong>@cast.Name</strong>
+                                </a>
+                                <br />
+                                <small class="text-muted">as @cast.Character</small>
+                            </div>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item text-muted">No cast information available</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Buy Movie Modal -->
+<div class="modal fade" id="buyMovieModal" tabindex="-1" aria-labelledby="buyMovieModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buyMovieModalLabel">Purchase Movie</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="@Model.PosterUrl" alt="@Model.Title" class="img-fluid mb-3" style="max-height: 200px;" />
+                <h4>@Model.Title</h4>
+                <p class="text-muted">@Model.TagLine</p>
+                <h3 class="text-success">@Model.Price?.ToString("C")</h3>
+                <p>Are you sure you want to purchase this movie?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-controller="Account" asp-action="PurchaseMovie" asp-route-id="@Model.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-success">
+                        💳 Purchase Now
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Write a Review for @Model.Title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Movies" asp-action="SubmitReview" asp-route-id="@Model.Id" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Rating</label>
+                        <select class="form-select" id="rating" name="rating" required>
+                            <option value="">Select a rating...</option>
+                            <option value="1">1 - Terrible</option>
+                            <option value="2">2 - Poor</option>
+                            <option value="3">3 - Bad</option>
+                            <option value="4">4 - Below Average</option>
+                            <option value="5">5 - Average</option>
+                            <option value="6">6 - Above Average</option>
+                            <option value="7">7 - Good</option>
+                            <option value="8">8 - Very Good</option>
+                            <option value="9">9 - Excellent</option>
+                            <option value="10">10 - Masterpiece</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewText" class="form-label">Your Review</label>
+                        <textarea class="form-control" id="reviewText" name="reviewText" rows="5" placeholder="Share your thoughts about this movie..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

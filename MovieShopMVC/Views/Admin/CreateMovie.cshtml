@@ -1,0 +1,131 @@
+﻿@model ApplicationCore.Models.CreateMovieViewModel
+
+@{
+    ViewData["Title"] = "Create Movie";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">🎬 Create New Movie</h2>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null) {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="CreateMovie" method="post">
+                        <!-- Basic Information -->
+                        <h4 class="border-bottom pb-2 mb-3">Basic Information</h4>
+
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label asp-for="Title" class="form-label">Title</label>
+                                <input asp-for="Title" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="OriginalLanguage" class="form-label">Language</label>
+                                <input asp-for="OriginalLanguage" class="form-control" placeholder="e.g., en" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Overview" class="form-label">Overview</label>
+                            <textarea asp-for="Overview" class="form-control" rows="4"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TagLine" class="form-label">Tagline</label>
+                            <input asp-for="TagLine" class="form-control" />
+                        </div>
+
+                        <!-- Financial Information -->
+                        <h4 class="border-bottom pb-2 mb-3 mt-4">Financial Information</h4>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label asp-for="Budget" class="form-label">Budget ($)</label>
+                                <input asp-for="Budget" type="number" step="0.01" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Revenue" class="form-label">Revenue ($)</label>
+                                <input asp-for="Revenue" type="number" step="0.01" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Price" class="form-label">Price ($)</label>
+                                <input asp-for="Price" type="number" step="0.01" class="form-control" />
+                            </div>
+                        </div>
+
+                        <!-- Release Information -->
+                        <h4 class="border-bottom pb-2 mb-3 mt-4">Release Information</h4>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="ReleaseDate" class="form-label">Release Date</label>
+                                <input asp-for="ReleaseDate" type="date" class="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="RunTime" class="form-label">Runtime (minutes)</label>
+                                <input asp-for="RunTime" type="number" class="form-control" />
+                            </div>
+                        </div>
+
+                        <!-- Media URLs -->
+                        <h4 class="border-bottom pb-2 mb-3 mt-4">Media & Links</h4>
+
+                        <div class="mb-3">
+                            <label asp-for="PosterUrl" class="form-label">Poster URL</label>
+                            <input asp-for="PosterUrl" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="BackdropUrl" class="form-label">Backdrop URL</label>
+                            <input asp-for="BackdropUrl" class="form-control" />
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="ImdbURL" class="form-label">IMDB URL</label>
+                                <input asp-for="ImdbURL" class="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="TmdbUrl" class="form-label">TMDB URL</label>
+                                <input asp-for="TmdbUrl" class="form-control" />
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Create Movie</button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-lg">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+    }
+
+    .card-header {
+        border-radius: 10px 10px 0 0 !important;
+    }
+
+    .form-label {
+        font-weight: 600;
+    }
+
+    h4 {
+        font-weight: 600;
+    }
+</style>

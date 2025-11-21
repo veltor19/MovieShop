@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MovieShopMVC</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MovieShopMVC.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar navbar-dark" style="background-color: #1a1a1a;">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center gap-3">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Movie Shop 🎬</a>
+                <div class="dropdown">
+                    <button class="btn btn-dark dropdown-toggle" type="button" id="genreDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        GENRES
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="genreDropdown">
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="1">Adventure</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="2">Fantasy</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="3">Animation</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="4">Drama</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="5">Horror</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="6">Action</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="7">Comedy</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="8">History</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="9">Western</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="10">Thriller</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="11">Crime</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="12">Documentary</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="13">Science Fiction</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="14">Mystery</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="15">Music</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="16">Romance</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="17">Family</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="18">War</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="19">Foreign</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index" asp-route-genreId="20">TV Movie</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            @if (Context.Session.GetString("UserId") == "1") {
+                <div class="d-flex gap-2">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-danger dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Admin
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="TopMovies">Top Movies</a></li>
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="CreateMovie">Create Movie</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            @Context.Session.GetString("UserName")
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Movies">Movies 🎬</a></li>
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Favorites">Favorites ⭐</a></li>
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Index">Account 👤</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="Logout">Log Out 🚪</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            } else if (Context.Session.GetString("UserId") != null) {
+                <!-- Logged IN -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        @Context.Session.GetString("UserName")
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" asp-controller="Account" asp-action="Movies">Movies 🎬</a></li>
+                        <li><a class="dropdown-item" asp-controller="Account" asp-action="Favorites">Favorites ⭐</a></li>
+                        <li><a class="dropdown-item" asp-controller="Account" asp-action="Index">Account 👤</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" asp-controller="User" asp-action="Logout">Log Out 🚪</a></li>
+                    </ul>
+                </div>
+            } else {
+                <!-- NOT logged in -->
+                <div class="d-flex gap-2">
+                    <a asp-controller="User" asp-action="Login" class="btn btn-outline-light btn-sm">Login</a>
+                    <a asp-controller="User" asp-action="Register" class="btn btn-light btn-sm">Register</a>
+                </div>
+            }
+        </div>
+    </nav>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - MovieShopMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
