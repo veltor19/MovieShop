@@ -9,3 +9,4 @@ C:\Users\pol\source\repos\MovieShop\ApplicationCore\obj\Debug\net9.0\Application
 C:\Users\pol\source\repos\MovieShop\ApplicationCore\obj\Debug\net9.0\refint\ApplicationCore.dll
 C:\Users\pol\source\repos\MovieShop\ApplicationCore\obj\Debug\net9.0\ApplicationCore.pdb
 C:\Users\pol\source\repos\MovieShop\ApplicationCore\obj\Debug\net9.0\ref\ApplicationCore.dll
+C:\Users\pol\source\repos\MovieShop\ApplicationCore\obj\Debug\net9.0\ApplicationCore.sourcelink.json
