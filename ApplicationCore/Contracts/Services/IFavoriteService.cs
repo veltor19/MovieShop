@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Services {
     public interface IFavoriteService {
-        bool ToggleFavorite(int userId, int movieId);
-        bool IsFavorite(int userId, int movieId);
-        IEnumerable<Favorite> GetUserFavorites(int userId);
+        Task<bool> ToggleFavorite(int userId, int movieId);
+        Task<bool> IsFavorite(int userId, int movieId);
+        Task<IEnumerable<Favorite>> GetUserFavorites(int userId);
     }
 }

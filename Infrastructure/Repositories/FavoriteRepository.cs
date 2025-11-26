@@ -14,39 +14,39 @@ namespace Infrastructure.Repositories {
         public FavoriteRepository(MovieShopDbContext context) {
             _context = context;
         }
-        public bool AddFavorite(int userId, int movieId) {
-            var exists = IsFavorite(userId, movieId);
+        public async Task<bool> AddFavorite(int userId, int movieId) {
+            var exists = await IsFavorite(userId, movieId);
             if (exists) {
                 return false;
             }
-            _context.Add(new Favorite {
+            await _context.AddAsync(new Favorite {
                 UserId = userId,
                 MovieId = movieId
             });
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public IEnumerable<Favorite> GetUserFavorites(int userId) {
-            return _context.Favorites
+        public async Task<IEnumerable<Favorite>> GetUserFavorites(int userId) {
+            return await _context.Favorites
             .Where(f => f.UserId == userId)
             .Include(f => f.Movie)
-            .ToList();
+            .ToListAsync();
         }
 
-        public bool IsFavorite(int userId, int movieId) {
-            return _context.Favorites
-            .Any(f => f.UserId == userId && f.MovieId == movieId);
+        public async Task<bool> IsFavorite(int userId, int movieId) {
+            return await _context.Favorites
+            .AnyAsync(f => f.UserId == userId && f.MovieId == movieId);
         }
 
-        public bool RemoveFavorite(int userId, int movieId) {
-            var favorite = _context.Favorites
-            .FirstOrDefault(f => f.UserId == userId && f.MovieId == movieId);
+        public async Task<bool> RemoveFavorite(int userId, int movieId) {
+            var favorite = await _context.Favorites
+            .FirstOrDefaultAsync(f => f.UserId == userId && f.MovieId == movieId);
 
             if (favorite == null) return false;
 
             _context.Favorites.Remove(favorite);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
     }

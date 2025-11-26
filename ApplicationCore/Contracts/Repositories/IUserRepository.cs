@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Contracts.Repositories {
     public interface IUserRepository: IRepository<User> {
-        public User GetByEmail(string email);
+        public Task<User> GetByEmail(string email);
 
     }
 }

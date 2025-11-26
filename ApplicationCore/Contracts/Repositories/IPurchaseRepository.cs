@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Contracts.Repositories {
     public interface IPurchaseRepository: IRepository<Purchase> {
-        bool HasUserPurchasedMovie(int ?userId, int movieId);
+        Task<bool> HasUserPurchasedMovie(int ?userId, int movieId);
 
-        IEnumerable<Purchase> GetUserPurchases(int userId);
+        Task<IEnumerable<Purchase>> GetUserPurchases(int userId);
 
-        IEnumerable<TopMovieViewModel> GetTopMoviesByPurchase(DateTime? fromDate, DateTime? toDate);
+        Task<IEnumerable<TopMovieViewModel>> GetTopMoviesByPurchase(DateTime? fromDate, DateTime? toDate);
     }
 }

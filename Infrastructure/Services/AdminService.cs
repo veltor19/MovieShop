@@ -20,11 +20,11 @@ namespace Infrastructure.Services {
             _movieRepository = movieRepository;
         }
 
-        public IEnumerable<TopMovieViewModel> GetTopMovies(DateTime? fromDate, DateTime? toDate) {
-            return _context.GetTopMoviesByPurchase(fromDate, toDate);
+        public async Task<IEnumerable<TopMovieViewModel>> GetTopMovies(DateTime? fromDate, DateTime? toDate) {
+            return await _context.GetTopMoviesByPurchase(fromDate, toDate);
         }
 
-        public Movie CreateMovie(CreateMovieViewModel model, string createdBy) {
+        public async Task<Movie> CreateMovie(CreateMovieViewModel model, string createdBy) {
             var movie = new Movie {
                 Title = model.Title,
                 Overview = model.Overview,
@@ -43,7 +43,7 @@ namespace Infrastructure.Services {
                 CreatedDate = DateTime.Now
             };
 
-            return _movieRepository.CreateMovie(movie);
+            return await _movieRepository.CreateMovie(movie);
         }
     }
 }

@@ -15,33 +15,33 @@ namespace Infrastructure.Repositories {
 
         }
 
-        public Movie CreateMovie(Movie movie) {
+        public async Task<Movie> CreateMovie(Movie movie) {
             movie.CreatedDate = DateTime.Now;
-            _movieShopDbContext.Movies.Add(movie);
-            _movieShopDbContext.SaveChanges();
+            await _movieShopDbContext.Movies.AddAsync(movie);
+            await _movieShopDbContext.SaveChangesAsync();
             return movie;
         }
-        public IEnumerable<Movie> GetTop20GrossingMovies() {
-            var movies = _movieShopDbContext.Movies.OrderByDescending(x => x.Revenue).Take(20);
+        public async Task<IEnumerable<Movie>> GetTop20GrossingMovies() {
+            var movies = await _movieShopDbContext.Movies.OrderByDescending(x => x.Revenue).Take(20).ToListAsync();
             return movies;
         }
 
-        public Movie GetMovieById(int id) {
-            return _movieShopDbContext.Movies
+        public async Task<Movie> GetMovieById(int id) {
+            return await _movieShopDbContext.Movies
                 .Include(m => m.MovieGenres).ThenInclude(mg => mg.Genre)
                 .Include(m => m.MovieCasts).ThenInclude(mc => mc.Cast)
                 .Include(m => m.Trailers)
-                .FirstOrDefault(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public IEnumerable<Movie> GetMoviesByGenre(int? Id) {
-            var movies = _movieShopDbContext.Movies.Where(m => m.MovieGenres.Any(mg => mg.GenreId == Id));
+        public async Task<IEnumerable<Movie>> GetMoviesByGenre(int? Id) {
+            var movies = await _movieShopDbContext.Movies.Where(m => m.MovieGenres.Any(mg => mg.GenreId == Id)).ToListAsync();
             return movies;
         }
 
-        public decimal GetAverageRating(int movieId) {
-            var ratings = _movieShopDbContext.Reviews.Where(r => r.MovieId == movieId)
-                .Select(r => r.Rating).ToList();
+        public async Task<decimal> GetAverageRating(int movieId) {
+            var ratings = await _movieShopDbContext.Reviews.Where(r => r.MovieId == movieId)
+                .Select(r => r.Rating).ToListAsync();
             if (!ratings.Any())
                 return 0;
             return ratings.Average();

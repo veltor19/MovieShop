@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Contracts.Services {
     public interface IAccountService {
-        UserAccountModel GetUserAccountDetails(int userId);
-        bool UpdateProfile(int userId, UserAccountModel model);
+        Task<UserAccountModel> GetUserAccountDetails(int userId);
+        Task<bool> UpdateProfile(int userId, UserAccountModel model);
     }
 }

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Contracts.Repositories {
     public interface IFavoriteRepository {
-        bool AddFavorite(int userId, int movieId);
-        bool RemoveFavorite(int userId, int movieId);
-        bool IsFavorite(int userId, int movieId);
-        IEnumerable<Favorite> GetUserFavorites(int userId);
+        Task<bool> AddFavorite(int userId, int movieId);
+        Task<bool> RemoveFavorite(int userId, int movieId);
+        Task<bool> IsFavorite(int userId, int movieId);
+        Task<IEnumerable<Favorite>> GetUserFavorites(int userId);
     }
 }

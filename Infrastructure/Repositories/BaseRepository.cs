@@ -14,33 +14,33 @@ namespace Infrastructure.Repositories {
         public BaseRepository(MovieShopDbContext movieShopDbContext) {
             _movieShopDbContext = movieShopDbContext;
         }
-        public T DeleteById(int id) {
-            var entity = _movieShopDbContext.Set<T>().Find(id);
+        public async Task<T> DeleteById(int id) {
+            var entity = await _movieShopDbContext.Set<T>().FindAsync(id);
             if (entity != null) {
                 _movieShopDbContext.Set<T>().Remove(entity);
-                _movieShopDbContext.SaveChanges();
+                await _movieShopDbContext.SaveChangesAsync();
                 return entity;
             }
             return null;
         }
 
-        public IEnumerable<T> GetAll() {
-            return _movieShopDbContext.Set<T>().ToList();
+        public async Task<IEnumerable<T>> GetAll() {
+            return await _movieShopDbContext.Set<T>().ToListAsync();
         }
 
-        public virtual T GetById(int id) {
-            return _movieShopDbContext.Set<T>().Find(id);
+        public virtual async Task<T> GetById(int id) {
+            return await _movieShopDbContext.Set<T>().FindAsync(id);
         }
 
-        public T Insert(T entity) {
-            _movieShopDbContext.Set<T>().Add(entity);
-            _movieShopDbContext.SaveChanges();
+        public async Task<T> Insert(T entity) {
+            await _movieShopDbContext.Set<T>().AddAsync(entity);
+            await _movieShopDbContext.SaveChangesAsync();
             return entity;
         }
 
-        public T Update(T entity) {
+        public async Task<T> Update(T entity) {
             _movieShopDbContext.Entry(entity).State = EntityState.Modified;
-            _movieShopDbContext.SaveChanges();
+            await _movieShopDbContext.SaveChangesAsync();
             return entity;
         }
     }

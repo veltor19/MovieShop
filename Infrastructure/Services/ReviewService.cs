@@ -14,8 +14,8 @@ namespace Infrastructure.Services {
         public ReviewService(IReviewRepository reviewRepository) {
             _reviewRepository = reviewRepository;
         }
-        public bool CreateReview(int userId, int movieId, decimal rating, string reviewText) {
-            var existingReview = _reviewRepository.GetUserReviewForMovie(userId, movieId);
+        public async Task<bool> CreateReview(int userId, int movieId, decimal rating, string reviewText) {
+            var existingReview = await _reviewRepository.GetUserReviewForMovie(userId, movieId);
             if (existingReview != null) return false;
 
             var review = new Review {
@@ -26,15 +26,15 @@ namespace Infrastructure.Services {
                 CreatedDate = DateTime.Now
             };
 
-            return _reviewRepository.AddReview(review);
+            return await _reviewRepository.AddReview(review);
         }
 
-        public IEnumerable<Review> GetMovieReviews(int movieId) {
-            return _reviewRepository.GetMovieReviews(movieId);
+        public async Task<IEnumerable<Review>> GetMovieReviews(int movieId) {
+            return await _reviewRepository.GetMovieReviews(movieId);
         }
 
-        public Review GetUserReviewForMovie(int userId, int movieId) {
-            return _reviewRepository.GetUserReviewForMovie(userId, movieId);
+        public async Task<Review> GetUserReviewForMovie(int userId, int movieId) {
+            return await _reviewRepository.GetUserReviewForMovie(userId, movieId);
         }
     }
 }

@@ -9,12 +9,12 @@ namespace ApplicationCore.Contracts.Services {
     public interface IMovieService {
         // all the business logic methods relating to movies
 
-        List<MovieCardModel> GetTop20GrossingMovies();
+        Task<List<MovieCardModel>> GetTop20GrossingMovies();
 
-        MovieDetailsModel GetMovieDetails(int id, int? userId);
+        Task<MovieDetailsModel> GetMovieDetails(int id, int? userId);
 
-        bool DeleteMovie(int id);
+        Task<bool> DeleteMovie(int id);
 
-        List<MovieCardModel> GetMovieByGenre(int? id);
+        Task<List<MovieCardModel>> GetMovieByGenre(int? id);
     }
 }

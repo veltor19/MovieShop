@@ -13,13 +13,13 @@ namespace MovieShopMVC.Controllers {
             _movieService = movieService;
         }
 
-        public IActionResult Index(int? genreId) {
+        public async Task<IActionResult> Index(int? genreId) {
             //var movieService = new MovieService();
             List<MovieCardModel> movies = new List<MovieCardModel>();
             if (genreId.HasValue) {
-                movies = _movieService.GetMovieByGenre(genreId);
+                movies = await _movieService.GetMovieByGenre(genreId);
             } else {
-                movies = _movieService.GetTop20GrossingMovies();
+                movies = await _movieService.GetTop20GrossingMovies();
             }
             return View(movies);
         }

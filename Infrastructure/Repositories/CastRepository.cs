@@ -14,8 +14,8 @@ namespace Infrastructure.Repositories {
 
         }
 
-        public override Cast GetById(int id) {
-            return _movieShopDbContext.Casts.FirstOrDefault(c => c.Id == id);
+        public override async Task<Cast> GetById(int id) {
+            return await _movieShopDbContext.Casts.FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

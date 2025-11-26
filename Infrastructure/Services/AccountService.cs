@@ -16,8 +16,8 @@ namespace Infrastructure.Services {
             _userRepository = userRepository;
         }
 
-        public UserAccountModel GetUserAccountDetails(int userId) {
-            var user = _userRepository.GetById(userId);
+        public async Task<UserAccountModel> GetUserAccountDetails(int userId) {
+            var user = await _userRepository.GetById(userId);
             if (user == null) return null;
 
             return new UserAccountModel {
@@ -32,8 +32,8 @@ namespace Infrastructure.Services {
             };
         }
 
-        public bool UpdateProfile(int userId, UserAccountModel model) {
-            var user = _userRepository.GetById(userId);
+        public async Task<bool> UpdateProfile(int userId, UserAccountModel model) {
+            var user = await _userRepository.GetById(userId);
             if (user == null) return false;
 
             user.FirstName = model.FirstName;
@@ -43,7 +43,7 @@ namespace Infrastructure.Services {
             user.DateOfBirth = model.DateOfBirth;
             user.ProfilePictureUrl = model.ProfilePictureUrl;
 
-            _userRepository.Update(user);
+            await _userRepository.Update(user);
             return true;
         }
     }

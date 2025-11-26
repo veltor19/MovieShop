@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace ApplicationCore.Contracts.Services {
     public interface IPurchaseService {
 
-        bool PurchaseMovie(int userId, int movieId);
-        bool HasUserPurchasedMovie(int userId, int movieId);
-        IEnumerable<Purchase> GetUserPurchases(int userId);
+        Task<bool> PurchaseMovie(int userId, int movieId);
+        Task<bool> HasUserPurchasedMovie(int userId, int movieId);
+        Task<IEnumerable<Purchase>> GetUserPurchases(int userId);
     }
 }

@@ -16,12 +16,12 @@ namespace Infrastructure.Services {
             _userRepository = userRepository;
         }
 
-        public User GetUserByEmail(string email) {
-            return _userRepository.GetByEmail(email);
+        public async Task<User> GetUserByEmail(string email) {
+            return await _userRepository.GetByEmail(email);
         }
 
-        public bool RegisterUser(RegisterRequestModel model) {
-            var existingUser = _userRepository.GetByEmail(model.Email);
+        public async Task<bool> RegisterUser(RegisterRequestModel model) {
+            var existingUser = await _userRepository.GetByEmail(model.Email);
             if (existingUser != null) {
                 return false;
             }
@@ -40,12 +40,12 @@ namespace Infrastructure.Services {
                 ProfilePictureUrl = "example.com"
             };
 
-            _userRepository.Insert(user);
+            await _userRepository.Insert(user);
             return true;
         }
 
-        public User ValidateUser(string email, string password) {
-            var user = _userRepository.GetByEmail(email);
+        public async Task<User> ValidateUser(string email, string password) {
+            var user = await _userRepository.GetByEmail(email);
             if (user == null) {
                 return null;
             }

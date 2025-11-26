@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories {
 
         }
 
-        public IEnumerable<TopMovieViewModel> GetTopMoviesByPurchase(DateTime? fromDate, DateTime? toDate) {
+        public async Task<IEnumerable<TopMovieViewModel>> GetTopMoviesByPurchase(DateTime? fromDate, DateTime? toDate) {
             var query = _movieShopDbContext.Purchases.AsQueryable();
 
             if (fromDate.HasValue) {
@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories {
                 query = query.Where(p => p.PurchaseDateTime <= endDate);
             }
 
-            var topMovies = query
+            var topMovies = await query
                 .GroupBy(p => p.MovieId)
                 .Select(g => new {
                     MovieId = g.Key,
@@ -36,12 +36,12 @@ namespace Infrastructure.Repositories {
                 })
                 .OrderByDescending(x => x.TotalPurchases)
                 .Take(30) // Get top 30 movies
-                .ToList();
+                .ToListAsync();
 
             var movieIds = topMovies.Select(tm => tm.MovieId).ToList();
-            var movies = _movieShopDbContext.Movies
+            var movies = await _movieShopDbContext.Movies
                 .Where(m => movieIds.Contains(m.Id))
-                .ToDictionary(m => m.Id, m => m.Title);
+                .ToDictionaryAsync(m => m.Id, m => m.Title);
 
             var result = topMovies
                 .Select((item, index) => new TopMovieViewModel {
@@ -55,12 +55,12 @@ namespace Infrastructure.Repositories {
             return result;
         }
 
-        public IEnumerable<Purchase> GetUserPurchases(int userId) {
-            return _movieShopDbContext.Purchases.Where(p => p.UserId == userId).Include(p => p.Movie).ToList();
+        public async Task<IEnumerable<Purchase>> GetUserPurchases(int userId) {
+            return await _movieShopDbContext.Purchases.Where(p => p.UserId == userId).Include(p => p.Movie).ToListAsync();
         }
 
-        public bool HasUserPurchasedMovie(int? userId, int movieId) {
-            return _movieShopDbContext.Purchases.Any(p => p.UserId == userId && p.MovieId == movieId);
+        public async Task<bool> HasUserPurchasedMovie(int? userId, int movieId) {
+            return await _movieShopDbContext.Purchases.AnyAsync(p => p.UserId == userId && p.MovieId == movieId);
         }
     }
 }

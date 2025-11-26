@@ -16,44 +16,44 @@ namespace Infrastructure.Repositories {
             _context = context;
         }
 
-        public bool AddReview(Review review) {
-            var exists = GetUserReviewForMovie(review.UserId, review.MovieId);
+        public async Task<bool> AddReview(Review review) {
+            var exists = await GetUserReviewForMovie(review.UserId, review.MovieId);
             if (exists != null) return false;
 
             review.CreatedDate = DateTime.Now;
-            _context.Reviews.Add(review);
-            _context.SaveChanges();
+            await _context.Reviews.AddAsync(review);
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public bool DeleteReview(int userId, int movieId) {
-            var review = GetUserReviewForMovie(userId, movieId);
+        public async Task<bool> DeleteReview(int userId, int movieId) {
+            var review = await GetUserReviewForMovie(userId, movieId);
             if (review == null) return false;
 
             _context.Reviews.Remove(review);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public IEnumerable<Review> GetMovieReviews(int movieId) {
-            return _context.Reviews
+        public async Task<IEnumerable<Review>> GetMovieReviews(int movieId) {
+            return await _context.Reviews
             .Where(r => r.MovieId == movieId)
             .Include(r => r.User)
             .OrderByDescending(r => r.CreatedDate)
-            .ToList();
+            .ToListAsync();
         }
 
-        public Review GetUserReviewForMovie(int userId, int movieId) { 
-            return _context.Reviews.FirstOrDefault(r => r.UserId == userId && r.MovieId == movieId);
+        public async Task<Review> GetUserReviewForMovie(int userId, int movieId) { 
+            return await _context.Reviews.FirstOrDefaultAsync(r => r.UserId == userId && r.MovieId == movieId);
         }
 
-        public bool UpdateReview(Review review) {
-            var existing = GetUserReviewForMovie(review.UserId, review.MovieId);
+        public async Task<bool> UpdateReview(Review review) {
+            var existing = await GetUserReviewForMovie(review.UserId, review.MovieId);
             if (existing == null) return false;
 
             existing.Rating = review.Rating;
             existing.ReviewText = review.ReviewText;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
     }

@@ -20,9 +20,9 @@ namespace MovieShopMVC.Controllers {
         }
 
         [HttpPost]
-        public IActionResult Login(LoginRequestModel model) {
+        public async Task<IActionResult> Login(LoginRequestModel model) {
 
-            var user = _userService.ValidateUser(model.Email, model.Password);
+            var user = await _userService.ValidateUser(model.Email, model.Password);
             if (user == null) {
                 ModelState.AddModelError("", "Invalid email or password");
                 return View(model);
@@ -38,16 +38,16 @@ namespace MovieShopMVC.Controllers {
             return View();
         }
         [HttpPost]
-        public IActionResult Register(RegisterRequestModel model) {
-            var existingUser = _userService.GetUserByEmail(model.Email);
+        public async Task<IActionResult> Register(RegisterRequestModel model) {
+            var existingUser = await _userService.GetUserByEmail(model.Email);
             if (existingUser != null) {
                 ModelState.AddModelError("Email", "Email already exists");
                 return View(model);
             }
 
-            var result = _userService.RegisterUser(model);
+            var result = await _userService.RegisterUser(model);
             if (result) {
-                var user = _userService.GetUserByEmail(model.Email);
+                var user = await _userService.GetUserByEmail(model.Email);
                 HttpContext.Session.SetString("UserId", user.Id.ToString());
                 HttpContext.Session.SetString("UserName", user.FirstName + " " + user.LastName);
                 HttpContext.Session.SetString("UserEmail", user.Email);

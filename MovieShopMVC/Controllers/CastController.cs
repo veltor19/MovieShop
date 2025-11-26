@@ -13,8 +13,8 @@ namespace MovieShopMVC.Controllers {
             return View();
         }
 
-        public IActionResult Details(int id) {
-            var cast = _castService.GetCastDetails(id);
+        public async Task<IActionResult> Details(int id) {
+            var cast = await _castService.GetCastDetails(id);
 
             if (cast == null) {
                 return NotFound();   // or return View("NotFound");

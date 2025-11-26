@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Contracts.Services {
     public interface IAdminService {
-        IEnumerable<TopMovieViewModel> GetTopMovies(DateTime? fromDate, DateTime? toDate);
-        Movie CreateMovie(CreateMovieViewModel model, string createdBy);
+        Task<IEnumerable<TopMovieViewModel>> GetTopMovies(DateTime? fromDate, DateTime? toDate);
+        Task<Movie> CreateMovie(CreateMovieViewModel model, string createdBy);
 
     }
 }

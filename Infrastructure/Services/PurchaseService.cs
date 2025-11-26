@@ -17,19 +17,19 @@ namespace Infrastructure.Services {
             _purchaseRepository = purchaseRepository;
             _movieRepository = movieRepository;
         }
-        public IEnumerable<Purchase> GetUserPurchases(int userId) {
-            return _purchaseRepository.GetUserPurchases(userId);
+        public async Task<IEnumerable<Purchase>> GetUserPurchases(int userId) {
+            return await _purchaseRepository.GetUserPurchases(userId);
         }
 
-        public bool HasUserPurchasedMovie(int userId, int movieId) {
-            return  _purchaseRepository.HasUserPurchasedMovie(userId, movieId);
+        public async Task<bool> HasUserPurchasedMovie(int userId, int movieId) {
+            return  await _purchaseRepository.HasUserPurchasedMovie(userId, movieId);
         }
 
-        public bool PurchaseMovie(int userId, int movieId) {
-            var alreadyPurchased = _purchaseRepository.HasUserPurchasedMovie(userId, movieId);
+        public async Task<bool> PurchaseMovie(int userId, int movieId) {
+            var alreadyPurchased = await _purchaseRepository.HasUserPurchasedMovie(userId, movieId);
             if (alreadyPurchased) return false;
 
-            var movie = _movieRepository.GetById(movieId);
+            var movie = await _movieRepository.GetById(movieId);
             if (movie == null) return false;
 
             var purchase = new Purchase {
@@ -40,7 +40,7 @@ namespace Infrastructure.Services {
                 TotalPrice = movie.Price ?? 0
             };
 
-            _purchaseRepository.Insert(purchase);
+            await _purchaseRepository.Insert(purchase);
             return true;
         }
     }

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Contracts.Services {
     public interface IUserService {
-        public bool RegisterUser(RegisterRequestModel registerRequestModel);
+        public Task<bool> RegisterUser(RegisterRequestModel registerRequestModel);
 
-        public User ValidateUser(string email, string password);
+        public Task<User> ValidateUser(string email, string password);
 
-        public User GetUserByEmail(string email);
+        public Task<User> GetUserByEmail(string email);
 
 
     }

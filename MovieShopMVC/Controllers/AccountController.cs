@@ -16,26 +16,26 @@ namespace MovieShopMVC.Controllers {
             _accountService = accountService;
         }
 
-        public IActionResult Index() {
+        public async Task<IActionResult> Index() {
             var userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString)) {
                 return RedirectToAction("Login", "User");
             }
             var userId = int.Parse(userIdString);
 
-            var model = _accountService.GetUserAccountDetails(userId);
+            var model = await _accountService.GetUserAccountDetails(userId);
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult UpdateProfile(UserAccountModel model) {
+        public async Task<IActionResult> UpdateProfile(UserAccountModel model) {
             var userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString)) {
                 return RedirectToAction("Login", "User");
             }
             var userId = int.Parse(userIdString);
 
-            var success = _accountService.UpdateProfile(userId, model);
+            var success = await _accountService.UpdateProfile(userId, model);
 
             if (success) {
                 TempData["SuccessMessage"] = "Profile updated successfully!";
@@ -48,14 +48,14 @@ namespace MovieShopMVC.Controllers {
 
 
         [HttpPost]
-        public IActionResult PurchaseMovie(int id) {
+        public async Task<IActionResult> PurchaseMovie(int id) {
             var userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString)) {
                 return RedirectToAction("Login", "User");
             }
 
             var userId = int.Parse(userIdString);
-            var result = _purchaseService.PurchaseMovie(userId, id);
+            var result = await _purchaseService.PurchaseMovie(userId, id);
 
             if (result) {
                 TempData["SuccessMessage"] = "Movie purchased successfully!";
@@ -67,26 +67,26 @@ namespace MovieShopMVC.Controllers {
         }
 
         [HttpPost]
-        public IActionResult ToggleFavorite(int id) {
+        public async Task<IActionResult> ToggleFavorite(int id) {
             var userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString)) {
                 return RedirectToAction("Login", "User");
             }
 
             var userId = int.Parse(userIdString);
-            _favoriteService.ToggleFavorite(userId, id);
+            await _favoriteService.ToggleFavorite(userId, id);
 
             return RedirectToAction("MovieDetails", "Movies", new { id });
         }
 
-        public IActionResult Movies() {
+        public async Task<IActionResult> Movies() {
             var userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString)) {
                 return RedirectToAction("Login", "User");
             }
 
             var userId = int.Parse(userIdString);
-            var purchases = _purchaseService.GetUserPurchases(userId);
+            var purchases = await _purchaseService.GetUserPurchases(userId);
             var movieCards = purchases.Select(p => new MovieCardModel {
                 Id = p.Movie.Id,
                 Title = p.Movie.Title,
@@ -97,14 +97,14 @@ namespace MovieShopMVC.Controllers {
             return View(movieCards);
         }
 
-        public IActionResult Favorites() {
+        public async Task<IActionResult> Favorites() {
             var userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString)) {
                 return RedirectToAction("Login", "User");
             }
 
             var userId = int.Parse(userIdString);
-            var favorites = _favoriteService.GetUserFavorites(userId);
+            var favorites = await _favoriteService.GetUserFavorites(userId);
             var movieCards = favorites.Select(p => new MovieCardModel {
                 Id = p.Movie.Id,
                 Title = p.Movie.Title,

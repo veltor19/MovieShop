@@ -16,26 +16,26 @@ namespace MovieShopMVC.Controllers {
         }
 
         [HttpGet]
-        public IActionResult MovieDetails(int id) {
+        public async Task<IActionResult> MovieDetails(int id) {
             var userIdString = HttpContext.Session.GetString("UserId");
             int? userId = null;
             if (!string.IsNullOrEmpty(userIdString)) {
                 userId = int.Parse(userIdString);
             }
-            var movie = _movieService.GetMovieDetails(id, userId);
+            var movie = await _movieService.GetMovieDetails(id, userId);
             return View(movie);
         }
 
 
         [HttpPost]
-        public IActionResult SubmitReview(int id, decimal rating, string reviewText) {
+        public async Task<IActionResult> SubmitReview(int id, decimal rating, string reviewText) {
             var userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString)) {
                 return RedirectToAction("Login", "User");
             }
 
             var userId = int.Parse(userIdString);
-            var result = _reviewService.CreateReview(userId, id, rating, reviewText);
+            var result = await _reviewService.CreateReview(userId, id, rating, reviewText);
 
             if (result) {
                 TempData["SuccessMessage"] = "Review submitted successfully!";

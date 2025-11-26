@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Contracts.Repositories {
     public interface IReviewRepository {
-        bool AddReview(Review review);
-        bool UpdateReview(Review review);
-        bool DeleteReview(int userId, int movieId);
-        Review GetUserReviewForMovie(int userId, int movieId);
+        Task<bool> AddReview(Review review);
+        Task<bool> UpdateReview(Review review);
+        Task<bool> DeleteReview(int userId, int movieId);
+        Task<Review> GetUserReviewForMovie(int userId, int movieId);
 
-        IEnumerable<Review> GetMovieReviews(int movieId);
+        Task<IEnumerable<Review>> GetMovieReviews(int movieId);
     }
 }

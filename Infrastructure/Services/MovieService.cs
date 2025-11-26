@@ -17,16 +17,16 @@ namespace Infrastructure.Services {
             _purchaseRepository = purchaseRepository;
         }
 
-        public bool DeleteMovie(int id) {
-            var movie = _movieRepository.DeleteById(id);
+        public async Task<bool> DeleteMovie(int id) {
+            var movie = await _movieRepository.DeleteById(id);
             if (movie == null) {
                 return false;
             }
             return true;
         }
 
-        public MovieDetailsModel GetMovieDetails(int id, int? userId) {
-            var movie = _movieRepository.GetById(id);
+        public async Task<MovieDetailsModel> GetMovieDetails(int id, int? userId) {
+            var movie = await _movieRepository.GetById(id);
             if (movie != null) {
                 var movieDetails = new MovieDetailsModel() {
                     Id = movie.Id,
@@ -43,8 +43,8 @@ namespace Infrastructure.Services {
                     Price = movie.Price,
                     ReleaseDate = movie.ReleaseDate,
                     RunTime = movie.RunTime,
-                    Rating = _movieRepository.GetAverageRating(id),
-                    IsPurchased = userId.HasValue && _purchaseRepository.HasUserPurchasedMovie(userId, id),
+                    Rating = await _movieRepository.GetAverageRating(id),
+                    IsPurchased = userId.HasValue && await _purchaseRepository.HasUserPurchasedMovie(userId, id),
                     Genres = movie.MovieGenres.Select(mg => new GenreModel {
                         Id = mg.Genre.Id,
                         Name = mg.Genre.Name
@@ -66,8 +66,8 @@ namespace Infrastructure.Services {
             return null;
         }
 
-        public List<MovieCardModel> GetTop20GrossingMovies() {
-            var movies = _movieRepository.GetTop20GrossingMovies();
+        public async Task<List<MovieCardModel>> GetTop20GrossingMovies() {
+            var movies = await _movieRepository.GetTop20GrossingMovies();
             var movieCardModels = new List<MovieCardModel>();
             foreach (var movie in movies) {
                 movieCardModels.Add(new MovieCardModel() {
@@ -80,8 +80,8 @@ namespace Infrastructure.Services {
             return movieCardModels;
         }
 
-        public List<MovieCardModel> GetMovieByGenre(int? id) {
-            var movies = _movieRepository.GetMoviesByGenre(id);
+        public async Task<List<MovieCardModel>> GetMovieByGenre(int? id) {
+            var movies = await _movieRepository.GetMoviesByGenre(id);
             var movieCardModels = new List<MovieCardModel>();
             foreach (var movie in movies) {
                 movieCardModels.Add(new MovieCardModel() {

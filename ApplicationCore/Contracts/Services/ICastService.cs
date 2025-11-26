@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.Contracts.Services {
     public interface ICastService {
-        Cast GetCastDetails(int id);
+        Task<Cast> GetCastDetails(int id);
     }
 }

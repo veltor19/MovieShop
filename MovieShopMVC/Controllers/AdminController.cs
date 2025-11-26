@@ -11,14 +11,14 @@ namespace MovieShopMVC.Controllers {
         }
 
         [HttpGet]
-        public IActionResult TopMovies(DateTime? fromDate, DateTime? toDate) {
+        public async Task<IActionResult> TopMovies(DateTime? fromDate, DateTime? toDate) {
             // Check if user is admin (UserId == "1")
             var userId = HttpContext.Session.GetString("UserId");
             if (userId != "1") {
                 return RedirectToAction("Index", "Home");
             }
 
-            var topMovies = _adminService.GetTopMovies(fromDate, toDate);
+            var topMovies = await _adminService.GetTopMovies(fromDate, toDate);
 
             ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
@@ -49,7 +49,7 @@ namespace MovieShopMVC.Controllers {
 
             try {
                 var userName = HttpContext.Session.GetString("UserName") ?? "Admin";
-                var movie = _adminService.CreateMovie(model, userName);
+                var movie = await _adminService.CreateMovie(model, userName);
 
                 TempData["SuccessMessage"] = $"Movie '{movie.Title}' created successfully!";
                 return RedirectToAction("Index", "Home");
