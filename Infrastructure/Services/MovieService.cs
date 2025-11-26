@@ -80,17 +80,23 @@ namespace Infrastructure.Services {
             return movieCardModels;
         }
 
-        public async Task<List<MovieCardModel>> GetMovieByGenre(int? id) {
-            var movies = await _movieRepository.GetMoviesByGenre(id);
-            var movieCardModels = new List<MovieCardModel>();
-            foreach (var movie in movies) {
-                movieCardModels.Add(new MovieCardModel() {
-                    Id = movie.Id,
-                    PosterURL = movie.PosterUrl,
-                    Title = movie.Title
-                });
-            }
-            return movieCardModels;
+        public async Task<PaginatedResultSet<MovieCardModel>> GetMoviesByGenrePaginated(int genreId, int pageSize, int pageNumber) {
+            var paginatedMovies = await _movieRepository.GetMoviesByGenre(genreId, pageSize, pageNumber);
+
+            // Map Movie entities to MovieCardModel
+            var movieCards = paginatedMovies.Data.Select(m => new MovieCardModel {
+                Id = m.Id,
+                Title = m.Title,
+                PosterURL = m.PosterUrl
+            });
+
+            return new PaginatedResultSet<MovieCardModel> {
+                Data = movieCards,
+                CurrentPage = paginatedMovies.CurrentPage,
+                PageSize = paginatedMovies.PageSize,
+                TotalRecords = paginatedMovies.TotalRecords,
+                GenreId = genreId
+            };
         }
 
     }

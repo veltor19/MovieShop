@@ -13,15 +13,17 @@ namespace MovieShopMVC.Controllers {
             _movieService = movieService;
         }
 
-        public async Task<IActionResult> Index(int? genreId) {
-            //var movieService = new MovieService();
+        public async Task<IActionResult> Index(int? genreId, int page = 1, int pageSize = 12) {
             List<MovieCardModel> movies = new List<MovieCardModel>();
-            if (genreId.HasValue) {
-                movies = await _movieService.GetMovieByGenre(genreId);
-            } else {
-                movies = await _movieService.GetTop20GrossingMovies();
-            }
+
+            movies = await _movieService.GetTop20GrossingMovies();
+  
             return View(movies);
+        }
+
+        public async Task<IActionResult> MoviesByGenre(int genreId, int pageSize = 30, int pageNumber = 1) {
+            var paginatedMovies = await _movieService.GetMoviesByGenrePaginated(genreId, pageSize, pageNumber);
+            return View(paginatedMovies);
         }
 
         public IActionResult Privacy() {

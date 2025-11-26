@@ -15,6 +15,6 @@ namespace ApplicationCore.Contracts.Services {
 
         Task<bool> DeleteMovie(int id);
 
-        Task<List<MovieCardModel>> GetMovieByGenre(int? id);
+        Task<PaginatedResultSet<MovieCardModel>> GetMoviesByGenrePaginated(int genreId, int pageSize, int pageNumber);
     }
 }
