@@ -5,67 +5,102 @@ using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using MovieShopMVC.Filters;
+using MovieShopMVC.Middleware;
+using Serilog;
+using Serilog.Formatting.Compact;
 
-var builder = WebApplication.CreateBuilder(args);
+// Configure Serilog BEFORE building the app
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft.AspNetCore", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .Enrich.WithProperty("Application", "MovieShopMVC")
+    .WriteTo.File(
+        new CompactJsonFormatter(),
+        "Logs/exceptions-.json",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30,
+        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error
+    )
+    .WriteTo.File(
+        new CompactJsonFormatter(),
+        "Logs/filter-logs-.json",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30,
+        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
+    )
+    .WriteTo.Console()
+    .CreateLogger();
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<IMovieService, MovieService>();
-builder.Services.AddScoped<IMovieRepository, MovieRepository>();
-builder.Services.AddScoped<IUserService, UserService>();    
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+try {
+    Log.Information("Starting MovieShopMVC application");
 
-builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
-builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+    var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
-builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+    // Use Serilog for logging
+    builder.Host.UseSerilog();
 
-builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-builder.Services.AddScoped<IReviewService, ReviewService>();
+    // Add services to the container.
+    builder.Services.AddControllersWithViews();
+    builder.Services.AddScoped<IMovieService, MovieService>();
+    builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+    builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+    builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+    builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+    builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+    builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+    builder.Services.AddScoped<IReviewService, ReviewService>();
+    builder.Services.AddScoped<IAccountService, AccountService>();
+    builder.Services.AddScoped<ICastService, CastService>();
+    builder.Services.AddScoped<ICastRepository, CastRepository>();
+    builder.Services.AddScoped<IAdminService, AdminService>();
 
-builder.Services.AddScoped<IAccountService, AccountService>();
+    builder.Services.AddDbContext<MovieShopDbContext>(options => {
+        options.UseLazyLoadingProxies()
+               .UseSqlServer(builder.Configuration.GetConnectionString("MovieShopDbConnection"));
+    });
 
-builder.Services.AddScoped<ICastService, CastService>();
-builder.Services.AddScoped<ICastRepository, CastRepository>();
+    builder.Services.AddSession(options => {
+        options.IdleTimeout = TimeSpan.FromMinutes(30);
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+    });
 
-builder.Services.AddScoped<IAdminService, AdminService>();
+    builder.Services.AddScoped<CreateMovieLoggingFilter>();
 
+    var app = builder.Build();
 
-builder.Services.AddDbContext<MovieShopDbContext>(options => {
-    options.UseLazyLoadingProxies() 
-           .UseSqlServer(builder.Configuration.GetConnectionString("MovieShopDbConnection"));
+    // Configure the HTTP request pipeline.
+    if (!app.Environment.IsDevelopment()) {
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
 
-});
-builder.Services.AddSession(options => {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
+    // Add Exception Handling Middleware EARLY in the pipeline
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+    app.UseHttpsRedirection();
+    app.UseRouting();
+    app.UseSession();
+    app.UseAuthorization();
 
-var app = builder.Build();
+    // Enable Serilog request logging
+    app.UseSerilogRequestLogging();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.MapStaticAssets();
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}")
+        .WithStaticAssets();
+
+    Log.Information("MovieShopMVC application started successfully");
+
+    app.Run();
+} catch (Exception ex) {
+    Log.Fatal(ex, "Application terminated unexpectedly");
+} finally {
+    Log.CloseAndFlush();
 }
-
-app.UseHttpsRedirection();
-app.UseRouting();
-app.UseSession();
-
-app.UseAuthorization();
-
-app.MapStaticAssets();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
-
-app.Run();

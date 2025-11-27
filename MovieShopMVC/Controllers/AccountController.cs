@@ -46,16 +46,47 @@ namespace MovieShopMVC.Controllers {
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> TestPurchase(int movieId, string date) {
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdString)) {
+                return Json(new { error = "Not logged in" });
+            }
+
+            DateTime testDate;
+            if (!DateTime.TryParse(date, out testDate)) {
+                return Json(new { error = "Invalid date format" });
+            }
+
+            var userId = int.Parse(userIdString);
+            var result = await _purchaseService.PurchaseMovie(userId, movieId, testDate);
+
+            return Json(new {
+                success = result,
+                date = testDate.ToString("yyyy-MM-dd"),
+                message = result ? "Purchase succeeded" : "Purchase failed (past date or already owned)"
+            });
+        }
+
 
         [HttpPost]
-        public async Task<IActionResult> PurchaseMovie(int id) {
+        public async Task<IActionResult> PurchaseMovie(int id, DateTime? purchaseDate = null) {
             var userIdString = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userIdString)) {
                 return RedirectToAction("Login", "User");
             }
 
+            // Use provided date or default to today
+            var actualPurchaseDate = purchaseDate ?? DateTime.Now;
+
+            // Manual validation using the same logic as the attribute
+            if (actualPurchaseDate.Date < DateTime.Today) {
+                TempData["ErrorMessage"] = "Purchase date cannot be earlier than today's date.";
+                return RedirectToAction("MovieDetails", "Movies", new { id });
+            }
+
             var userId = int.Parse(userIdString);
-            var result = await _purchaseService.PurchaseMovie(userId, id);
+            var result = await _purchaseService.PurchaseMovie(userId, id, actualPurchaseDate);
 
             if (result) {
                 TempData["SuccessMessage"] = "Movie purchased successfully!";

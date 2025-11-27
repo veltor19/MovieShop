@@ -21,6 +21,11 @@ namespace MovieShopMVC.Controllers {
             return View(movies);
         }
 
+        [HttpGet]
+        public IActionResult TestException() {
+            throw new InvalidOperationException("Testing Serilog exception logging!");
+        }
+
         public async Task<IActionResult> MoviesByGenre(int genreId, int pageSize = 30, int pageNumber = 1) {
             var paginatedMovies = await _movieService.GetMoviesByGenrePaginated(genreId, pageSize, pageNumber);
             return View(paginatedMovies);

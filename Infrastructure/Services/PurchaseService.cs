@@ -25,7 +25,11 @@ namespace Infrastructure.Services {
             return  await _purchaseRepository.HasUserPurchasedMovie(userId, movieId);
         }
 
-        public async Task<bool> PurchaseMovie(int userId, int movieId) {
+        public async Task<bool> PurchaseMovie(int userId, int movieId, DateTime purchaseDate) {
+            if (purchaseDate.Date < DateTime.Today) {
+                return false; // Or throw new ArgumentException("Purchase date cannot be in the past");
+            }
+
             var alreadyPurchased = await _purchaseRepository.HasUserPurchasedMovie(userId, movieId);
             if (alreadyPurchased) return false;
 
@@ -35,7 +39,7 @@ namespace Infrastructure.Services {
             var purchase = new Purchase {
                 UserId = userId,
                 MovieId = movieId,
-                PurchaseDateTime = DateTime.Now,
+                PurchaseDateTime = purchaseDate,  // Use the validated date parameter
                 PurchaseNumber = "1",
                 TotalPrice = movie.Price ?? 0
             };

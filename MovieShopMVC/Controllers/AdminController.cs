@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Contracts.Services;
 using ApplicationCore.Models;
 using Microsoft.AspNetCore.Mvc;
+using MovieShopMVC.Filters;
 
 namespace MovieShopMVC.Controllers {
     public class AdminController : Controller {
@@ -27,6 +28,7 @@ namespace MovieShopMVC.Controllers {
         }
 
         [HttpGet]
+        [ServiceFilter(typeof(CreateMovieLoggingFilter))]
         public IActionResult CreateMovie() {
             var userId = HttpContext.Session.GetString("UserId");
             if (userId != "1") {
@@ -37,6 +39,7 @@ namespace MovieShopMVC.Controllers {
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(CreateMovieLoggingFilter))]
         public async Task<IActionResult> CreateMovie(CreateMovieViewModel model) {
             var userId = HttpContext.Session.GetString("UserId");
             if (userId != "1") {
